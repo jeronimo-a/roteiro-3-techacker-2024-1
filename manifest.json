@@ -1,0 +1,25 @@
+{
+    "manifest_version": 2,
+    "name": "Detector Master 2000",
+    "version": "1.0",
+    
+    "applications": {
+        "gecko": {
+            "id": "detector_master_2000@mozilla.org"
+        }
+    },
+
+    "permissions": ["https://*/*", "https://*/*"],
+
+    "browser_action": {
+        "default_icon":  "button/magnifier.png",
+        "default_title": "Detector Master 2000",
+        "default_popup": "popup/choose_beast.html"
+    },
+
+    "web_acessible_resources": [
+        "beasts/frog.jpg",
+        "beasts/turtle.jpg",
+        "beasts/snake.jpg"
+    ]
+}
