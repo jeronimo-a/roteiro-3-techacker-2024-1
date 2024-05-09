@@ -9,17 +9,21 @@
         }
     },
 
+    "background": {
+        "scripts": ["scripts/background.js"]
+    },
+
     "content_scripts": [
         {
-          "matches": ["*://*/*"],
-          "js": ["content_scripts/detector_master_2000.js"]
+          "matches": ["<all_urls>"],
+          "js": ["scripts/contentScript.js"]
         }
     ],
 
     "browser_action": {
-        "default_icon":  "button/magnifier.png",
+        "default_icon":  "icons/magnifier.png",
         "default_title": "Detector Master 2000",
-        "default_popup": "popup/choose_beast.html"
+        "default_popup": "popup/chooseBeast.html"
     },
 
     "web_acessible_resources": [

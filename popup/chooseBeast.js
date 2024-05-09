@@ -6,7 +6,7 @@ document.addEventListener("click", function (e) {
     var chosenBeast = e.target.textContent;
   
     chrome.tabs.executeScript(null, {
-      file: "/content_scripts/detector_master_2000.js",
+      file: "scripts/contentScript.js",
     });
   
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {

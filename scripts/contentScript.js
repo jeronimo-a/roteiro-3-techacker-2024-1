@@ -2,6 +2,8 @@
 document.body.style.border = "5px solid red";
 chrome.runtime.onMessage.addListener(beastify);
 
+alert("uhu");
+
 function beastify(request, sender, sendResponse) {
   removeEverything();
   insertBeast(beastNameToURL(request.beast));
