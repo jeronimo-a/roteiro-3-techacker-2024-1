@@ -1,6 +1,20 @@
+// ################################################
+// ############## CHAMADAS DE FUNÇÃO ##############
+// ################################################
+
 const VERSION = browser.runtime.getManifest().version;
+browser.runtime.onMessage.addListener(handleMessage);
+
+// ##############################################
+// ############## VARIÁVEIS GERAIS ##############
+// ##############################################
+
 const ICON_DEFAULT = "icons/magnifier.png";
 const gDisplayNotifications = true;
+
+// ########################################
+// ############### MENSAGENS ##############
+// ########################################
 
 function handleMessage(request, sender, sendResponse) {
 	detectorNotification.display("Teste", 2000);
@@ -21,7 +35,7 @@ const detectorNotification = {
 		browser.notifications.create(detectorNotification._notificationId, {
 			"type": "basic",
 			"iconUrl": detectorNotification._notificationIcon,
-			"title": "Detector Master 2000 v" + VERSION,
+			"title": "Detector Master 2000",
 			"message": text
 		});
 	
@@ -30,9 +44,3 @@ const detectorNotification = {
 		}, millis);
 	}
 }
-
-// ############################################
-// ############### NOTIFICAÇÕES ###############
-// ############################################
-
-browser.runtime.onMessage.addListener(handleMessage);
