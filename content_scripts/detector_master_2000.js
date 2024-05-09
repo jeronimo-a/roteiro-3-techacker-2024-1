@@ -24,11 +24,11 @@ function insertBeast(beastURL) {
 
 function beastNameToURL(beastName) {
   switch (beastName) {
-    case "Frog":
+    case "Sapão":
       return chrome.extension.getURL("beasts/frog.jpg");
-    case "Snake":
+    case "Croba":
       return chrome.extension.getURL("beasts/snake.jpg");
-    case "Turtle":
+    case "Tortuga":
       return chrome.extension.getURL("beasts/turtle.jpg");
   }
 }
