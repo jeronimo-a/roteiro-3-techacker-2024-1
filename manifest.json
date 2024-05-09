@@ -9,12 +9,10 @@
         }
     },
 
-    "permissions": ["https://*/*", "https://*/*"],
-
     "content_scripts": [
         {
           "matches": ["*://*/*"],
-          "js": ["content_scripts/borderify.js"]
+          "js": ["content_scripts/detector_master_2000.js"]
         }
     ],
 

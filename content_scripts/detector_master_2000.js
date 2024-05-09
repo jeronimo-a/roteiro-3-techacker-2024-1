@@ -1,4 +1,5 @@
 // Assign beastify() as a listener for messages from the extension.
+document.body.style.border = "5px solid red";
 chrome.runtime.onMessage.addListener(beastify);
 
 function beastify(request, sender, sendResponse) {
