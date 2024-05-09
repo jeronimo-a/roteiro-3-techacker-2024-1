@@ -1,36 +1,16 @@
-// Assign beastify() as a listener for messages from the extension.
-document.body.style.border = "5px solid red";
-chrome.runtime.onMessage.addListener(beastify);
-
-alert("uhu");
-
-function beastify(request, sender, sendResponse) {
-  removeEverything();
-  insertBeast(beastNameToURL(request.beast));
-  chrome.runtime.onMessage.removeListener(beastify);
+function handleResponse(message) {
+  console.log(`Message from the background script: ${message.response}`);
 }
 
-function removeEverything() {
-  while (document.body.firstChild) {
-    document.body.firstChild.remove();
-  }
+function handleError(error) {
+  console.log(`Error: ${error}`);
 }
 
-function insertBeast(beastURL) {
-  var beastImage = document.createElement("img");
-  beastImage.setAttribute("src", beastURL);
-  beastImage.setAttribute("style", "width: 100vw");
-  beastImage.setAttribute("style", "height: 100vh");
-  document.body.appendChild(beastImage);
+function notifyBackgroundPage() {
+  const sending = browser.runtime.sendMessage({
+    greeting: "Greeting from the content script",
+  });
+  sending.then(handleResponse, handleError);
 }
 
-function beastNameToURL(beastName) {
-  switch (beastName) {
-    case "Sapão":
-      return chrome.extension.getURL("beasts/frog.jpg");
-    case "Croba":
-      return chrome.extension.getURL("beasts/snake.jpg");
-    case "Tortuga":
-      return chrome.extension.getURL("beasts/turtle.jpg");
-  }
-}
+window.addEventListener("click", notifyBackgroundPage);

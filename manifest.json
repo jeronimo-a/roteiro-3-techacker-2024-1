@@ -9,6 +9,11 @@
         }
     },
 
+    "permissions": [
+        "notifications",
+        "storage"
+    ],
+
     "background": {
         "scripts": ["scripts/background.js"]
     },
@@ -24,11 +29,5 @@
         "default_icon":  "icons/magnifier.png",
         "default_title": "Detector Master 2000",
         "default_popup": "popup/chooseBeast.html"
-    },
-
-    "web_acessible_resources": [
-        "beasts/frog.jpg",
-        "beasts/turtle.jpg",
-        "beasts/snake.jpg"
-    ]
+    }
 }
