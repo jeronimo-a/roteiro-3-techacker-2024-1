@@ -11,6 +11,13 @@
 
     "permissions": ["https://*/*", "https://*/*"],
 
+    "content_scripts": [
+        {
+          "matches": ["*://*/*"],
+          "js": ["content_scripts/borderify.js"]
+        }
+    ],
+
     "browser_action": {
         "default_icon":  "button/magnifier.png",
         "default_title": "Detector Master 2000",
