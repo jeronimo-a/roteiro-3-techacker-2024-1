@@ -10,8 +10,9 @@
     },
 
     "permissions": [
+        "webRequest",
         "notifications",
-        "storage"
+        "<all_urls>"
     ],
 
     "background": {
