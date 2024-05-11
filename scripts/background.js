@@ -25,9 +25,12 @@ browser.webRequest.onBeforeRequest.addListener(			// define que função chamar 
 // handler que roda ao receber uma mensagem de algum outro lugar do código
 function handleMessage(request, sender, sendResponse) {
 	
-	detectorNotification.display(request.action, 1000);
-	
 	switch (request.action) {
+
+		// usado para reconhecer quando o código é executado
+		case "debug":
+			detectorNotification.display("Debug: " + request.message, 1000);
+			break;
 		
 		// solicitação das conexões com terceiras partes
 		case "thirdPartyConnections":
