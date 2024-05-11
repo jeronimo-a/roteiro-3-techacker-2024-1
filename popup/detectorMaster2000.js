@@ -2,12 +2,12 @@
 document.addEventListener("DOMContentLoaded", contentLoadedHandler);
 
 function contentLoadedHandler() {
-	browser.tabs.query({ active: true, currentWindow: true }, tabsQueryFunction);
+	browser.tabs.query({ active: true, currentWindow: true }, tabsQueryTPConnections);
 }
 
-function tabsQueryFunction(tabs) {
-	const sending = browser.runtime.sendMessage({ action: "thirdPartyConnections", tabId: tabs[0].id });
-	sending.then(populateTPAccessList);
+function tabsQueryTPConnections(tabs) {
+	const response = browser.runtime.sendMessage({ action: "thirdPartyConnections", tabId: tabs[0].id });
+	response.then(populateTPAccessList);
 }
 
 function populateTPAccessList(response) {
