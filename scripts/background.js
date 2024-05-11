@@ -56,7 +56,7 @@ function handleWebRequest(details) {
             const tabHostname = new URL(tab.url).hostname;
 			
 			// se o hostname direcionado for diferente do principal da aba, adicona ele ao conjunto de hosts de terceira parte da aba
-            if (getDomainName(fpHostname) !== getDomainName(tabHostname)) {
+            if (fpHostname !== tabHostname) {
 
 				// se não existir o conjunto para o tal hostname da aba, cria um antes de adicionar
                 if (!thirdPartyRequests[tabId]) { thirdPartyRequests[tabId] = new Set(); }
@@ -92,13 +92,4 @@ const detectorNotification = {
 			browser.notifications.clear(razorNotification._notificationId);
 		}, millis);
 	}
-}
-
-// #############################################
-// ############### FUNÇÕES EXTRA ###############
-// #############################################
-
-function getDomainName(domain) {
-    const sub = domain.split(".").reverse();
-    return sub.length <= 2 ? domain : `${sub[1]}.${sub[0]}`;
 }
