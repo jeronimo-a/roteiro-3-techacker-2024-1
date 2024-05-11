@@ -8,9 +8,9 @@ const gDisplayNotifications = true;						// habilita ou desabilita notificaçõe
 
 let thirdPartyRequests = {};	// dicionário que relaciona o host principal de cada aba a um conjunto com os hosts de terceira parte
 
-// ################################################
-// ############## CHAMADAS DE FUNÇÃO ##############
-// ################################################
+// ###################################################
+// ############## DEFINIÇÃO DE HANDLERS ##############
+// ###################################################
 
 browser.runtime.onMessage.addListener(handleMessage);	// define que função chamar ao receber uma mensagem de algum outro pedaço do código
 browser.webRequest.onBeforeRequest.addListener(			// define que função chamar antes de fazer um novo request
@@ -24,7 +24,15 @@ browser.webRequest.onBeforeRequest.addListener(			// define que função chamar 
 
 // handler que roda ao receber uma mensagem de algum outro lugar do código
 function handleMessage(request, sender, sendResponse) {
-	detectorNotification.display("Teste", 2000);
+	
+	detectorNotification.display(request.action, 1000);
+	
+	switch (request.action) {
+        
+		case "thirdPartyRequests":
+            sendResponse(Array.from(thirdPartyRequests[request.tabId] || []));
+            break;
+	}
 }
 
 // handler que roda antes de cada request da página
@@ -39,7 +47,7 @@ function handleWebRequest(details) {
 
     // Adiciona o hostname ao conjunto de hostnames associados ao hostname da aba
 	// A arrow function tab => {} tem tab como um parâmetro
-    chrome.tabs.get(tabId, tab => {
+    browser.tabs.get(tabId, tab => {
 
 		// se não houver erro
         if (!chrome.runtime.lastError) {
@@ -84,4 +92,13 @@ const detectorNotification = {
 			browser.notifications.clear(razorNotification._notificationId);
 		}, millis);
 	}
+}
+
+// #############################################
+// ############### FUNÇÕES EXTRA ###############
+// #############################################
+
+function getDomainName(domain) {
+    const sub = domain.split(".").reverse();
+    return sub.length <= 2 ? domain : `${sub[1]}.${sub[0]}`;
 }

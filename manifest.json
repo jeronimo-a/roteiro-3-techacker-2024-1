@@ -12,6 +12,8 @@
     "permissions": [
         "webRequest",
         "notifications",
+        "tabs",
+        "activeTab",
         "<all_urls>"
     ],
 
@@ -19,16 +21,9 @@
         "scripts": ["scripts/background.js"]
     },
 
-    "content_scripts": [
-        {
-          "matches": ["<all_urls>"],
-          "js": ["scripts/contentScript.js"]
-        }
-    ],
-
     "browser_action": {
         "default_icon":  "icons/magnifier.png",
         "default_title": "Detector Master 2000",
-        "default_popup": "popup/chooseBeast.html"
+        "default_popup": "popup/detectorMaster2000.html"
     }
 }
