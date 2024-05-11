@@ -6,12 +6,12 @@ function contentLoadedHandler() {
 }
 
 function tabsQueryFunction(tabs) {
-	const sending = browser.runtime.sendMessage({ action: "thirdPartyRequests", tabId: tabs[0].id });
+	const sending = browser.runtime.sendMessage({ action: "thirdPartyConnections", tabId: tabs[0].id });
 	sending.then(populateTPAccessList);
 }
 
 function populateTPAccessList(response) {
-	const thirdPartyConnectionsList = document.getElementById("third-party-connections");
+	const thirdPartyConnectionsList = document.getElementById("thirdPartyConnections");
 	response.forEach(hostname => {
 		const listItem = document.createElement("li");
 		listItem.textContent = hostname;

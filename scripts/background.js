@@ -6,11 +6,11 @@ const ICON_DEFAULT = "icons/magnifier.png";				// local do ícone
 const VERSION = browser.runtime.getManifest().version;	// versão da extensão
 const gDisplayNotifications = true;						// habilita ou desabilita notificações
 
-let thirdPartyRequests = {};	// dicionário que relaciona o host principal de cada aba a um conjunto com os hosts de terceira parte
+let thirdPartyConnections = {};	// dicionário que relaciona o host principal de cada aba a um conjunto com os hosts de terceira parte
 
-// ###################################################
-// ############## DEFINIÇÃO DE HANDLERS ##############
-// ###################################################
+// ######################################################
+// ############## CONFIGRUAÇÃO DE HANDLERS ##############
+// ######################################################
 
 browser.runtime.onMessage.addListener(handleMessage);	// define que função chamar ao receber uma mensagem de algum outro pedaço do código
 browser.webRequest.onBeforeRequest.addListener(			// define que função chamar antes de fazer um novo request
@@ -18,9 +18,9 @@ browser.webRequest.onBeforeRequest.addListener(			// define que função chamar 
     {urls: ["<all_urls>"]}	// para que URLs
 );
 
-// #######################################
-// ############### HANDLERS ##############
-// #######################################
+// ########################################
+// ############### HANDLERS ###############
+// ########################################
 
 // handler que roda ao receber uma mensagem de algum outro lugar do código
 function handleMessage(request, sender, sendResponse) {
@@ -28,9 +28,10 @@ function handleMessage(request, sender, sendResponse) {
 	detectorNotification.display(request.action, 1000);
 	
 	switch (request.action) {
-        
-		case "thirdPartyRequests":
-            sendResponse(Array.from(thirdPartyRequests[request.tabId] || []));
+		
+		// solicitação das conexões com terceiras partes
+		case "thirdPartyConnections":
+            sendResponse(Array.from(thirdPartyConnections[request.tabId] || []));
             break;
 	}
 }
@@ -59,8 +60,8 @@ function handleWebRequest(details) {
             if (fpHostname !== tabHostname) {
 
 				// se não existir o conjunto para o tal hostname da aba, cria um antes de adicionar
-                if (!thirdPartyRequests[tabId]) { thirdPartyRequests[tabId] = new Set(); }
-                thirdPartyRequests[tabId].add(fpHostname);
+                if (!thirdPartyConnections[tabId]) { thirdPartyConnections[tabId] = new Set(); }
+                thirdPartyConnections[tabId].add(fpHostname);
             }
         }
     });
