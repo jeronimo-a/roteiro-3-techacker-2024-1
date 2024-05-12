@@ -40,18 +40,10 @@ function handleMessage(request, sender, sendResponse) {
 
 		// solicitação dos cookies
 		case "countCookies":
-			// aqui chega
-            browser.tabs.query({ active: true, currentWindow: true }, tabs => {
-				// aqui chega
-                if (tabs.length > 0) {
-					// aqui chega
-                    const domain = new URL(tabs[0].url).hostname;
-                    countCookies(tabs[0].id, domain).then(details => {
-                        sendResponse(details);
-                    });
-                }
-            });
-            return true;
+            const tabsResponse = browser.tabs.query({ active: true, currentWindow: true });
+			const cookieDetailsResponse = tabsResponse.then(getCookieDetails);
+			cookieDetailsResponse.then(sendResponse);
+			return true;
 	}
 }
 
@@ -118,34 +110,30 @@ const detectorNotification = {
 // ############### FUNÇÕES EXTRA ###############
 // #############################################
 
-function countCookies(tabId, domain) {
-	// aqui chega
-    return new Promise(resolve => {
-		// aqui chega
-        browser.cookies.getAll({}, cookies => {
+function getCookieDetails(tabs) {
+	if (tabs.length > 0) {
+		const domain = new URL(tabs[0].url).hostname;
+		const tabId = tabs[0].id;
+		return new Promise(resolve => {
 
-			// chega aqui
-			
-            const details = {
-                total: cookies.length,
-                firstParty: 0,
-                thirdParty: 0,
-                session: 0,
-                persistent: 0
-            };
+			browser.cookies.getAll({}, cookies => {				
+				
+				const details = {
+					total: cookies.length,
+					firstParty: 0,
+					thirdParty: 0,
+					session: 0,
+					persistent: 0
+				};
 
-			// chega aqui
+				cookies.forEach(cookie => {
+					cookie.domain === domain ? details.firstParty++ : details.thirdParty++;
+					"session" in cookie && cookie.session ? details.session++ : details.persistent++;
+				});
 
-            cookies.forEach(cookie => {
-				// chega aqui
-                cookie.domain === domain ? details.firstParty++ : details.thirdParty++;
-                "session" in cookie && cookie.session ? details.session++ : details.persistent++;
-            });
-			// chega aqui
-            cookiesDetails[tabId] = details;
-			// chega aqui
-            resolve(details);
-			// chega aqui
-        });
-    });
+				cookiesDetails[tabId] = details;
+				resolve(details);
+			});
+		});
+	}
 }
