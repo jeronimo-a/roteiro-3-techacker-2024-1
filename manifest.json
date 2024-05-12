@@ -14,6 +14,8 @@
         "notifications",
         "tabs",
         "activeTab",
+        "storage",
+        "cookies",
         "<all_urls>"
     ],
 

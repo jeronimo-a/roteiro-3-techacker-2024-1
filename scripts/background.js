@@ -7,6 +7,7 @@ const VERSION = browser.runtime.getManifest().version;	// versão da extensão
 const gDisplayNotifications = true;						// habilita ou desabilita notificações
 
 let thirdPartyConnections = {};	// dicionário que relaciona o host principal de cada aba a um conjunto com os hosts de terceira parte
+let cookiesDetails = {};
 
 // ######################################################
 // ############## CONFIGRUAÇÃO DE HANDLERS ##############
@@ -36,6 +37,21 @@ function handleMessage(request, sender, sendResponse) {
 		case "thirdPartyConnections":
             sendResponse(Array.from(thirdPartyConnections[request.tabId] || []));
             break;
+
+		// solicitação dos cookies
+		case "countCookies":
+			// aqui chega
+            browser.tabs.query({ active: true, currentWindow: true }, tabs => {
+				// aqui chega
+                if (tabs.length > 0) {
+					// aqui chega
+                    const domain = new URL(tabs[0].url).hostname;
+                    countCookies(tabs[0].id, domain).then(details => {
+                        sendResponse(details);
+                    });
+                }
+            });
+            return true;
 	}
 }
 
@@ -96,4 +112,40 @@ const detectorNotification = {
 			browser.notifications.clear(razorNotification._notificationId);
 		}, millis);
 	}
+}
+
+// #############################################
+// ############### FUNÇÕES EXTRA ###############
+// #############################################
+
+function countCookies(tabId, domain) {
+	// aqui chega
+    return new Promise(resolve => {
+		// aqui chega
+        browser.cookies.getAll({}, cookies => {
+
+			// chega aqui
+			
+            const details = {
+                total: cookies.length,
+                firstParty: 0,
+                thirdParty: 0,
+                session: 0,
+                persistent: 0
+            };
+
+			// chega aqui
+
+            cookies.forEach(cookie => {
+				// chega aqui
+                cookie.domain === domain ? details.firstParty++ : details.thirdParty++;
+                "session" in cookie && cookie.session ? details.session++ : details.persistent++;
+            });
+			// chega aqui
+            cookiesDetails[tabId] = details;
+			// chega aqui
+            resolve(details);
+			// chega aqui
+        });
+    });
 }
