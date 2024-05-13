@@ -40,15 +40,15 @@ function handleMessage(request, sender, sendResponse) {
 
 		// solicitação dos cookies
 		case "countCookies":
-            const tabsResponse = browser.tabs.query({ active: true, currentWindow: true });
-			const cookieDetailsResponse = tabsResponse.then(getCookieDetails);
+            const cookiesTabsResponse = browser.tabs.query({ active: true, currentWindow: true });
+			const cookieDetailsResponse = cookiesTabsResponse.then(getCookieDetails);
 			cookieDetailsResponse.then(sendResponse);
 			return true;
 
 		case "localStorage":
-			chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-                tabs.length > 0 ? countStorageItemsInTab(tabs[0].id, sendResponse) : sendResponse({ error: "No active tab found" });
-            });
+			const storageTabsResponse = browser.tabs.query({ active: true, currentWindow: true });
+			const storageResponse = storageTabsResponse.then(countStorageItemsInTab);
+			storageResponse.then(sendResponse);
 			return true;
 
 		default:
@@ -91,17 +91,6 @@ function handleWebRequest(details) {
 // ############### NOTIFICAÇÕES ###############
 // ############################################
 
-function countStorageItemsInTab(tabId, sendResponse) {
-    chrome.tabs.executeScript(tabId, {
-        code: `({
-            localStorageCount: Object.keys(localStorage).length,
-            sessionStorageCount: Object.keys(sessionStorage).length
-        })`
-    }, results => {
-        chrome.runtime.lastError ? sendResponse({ error: chrome.runtime.lastError.message }) : sendResponse({ data: results[0] });
-    });
-}
-
 // objeto de notificações
 const detectorNotification = {
 	
@@ -129,6 +118,32 @@ const detectorNotification = {
 // #############################################
 // ############### FUNÇÕES EXTRA ###############
 // #############################################
+
+function countStorageItemsInTab(tabs) {
+    return new Promise(resolve => {
+        if (tabs.length <= 0) {
+            resolve({ error: "Sem abas ativas" });
+            return;
+        }
+        const tabId = tabs[0].id; // Obtém o ID da primeira aba na lista de abas
+
+        const scriptResponse = browser.tabs.executeScript(tabId, {
+            code: `({
+                localStorageCount: Object.keys(localStorage).length,
+            })`
+        });
+
+        scriptResponse.then(results => {
+            if (browser.runtime.lastError) {
+                resolve({ error: browser.runtime.lastError.message });
+            } else {
+                resolve({ data: results[0] });
+            }
+        }).catch(error => {
+            resolve({ error: error.message });
+        });
+    });
+}
 
 function getCookieDetails(tabs) {
 	if (tabs.length > 0) {
