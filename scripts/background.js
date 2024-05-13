@@ -44,6 +44,13 @@ function handleMessage(request, sender, sendResponse) {
 			const cookieDetailsResponse = tabsResponse.then(getCookieDetails);
 			cookieDetailsResponse.then(sendResponse);
 			return true;
+
+		case "localStorage":
+			sendResponse({ message: "ok" });
+			return true;
+
+		default:
+			sendResponse({ error: "Error, unknown action " + request.action });
 	}
 }
 

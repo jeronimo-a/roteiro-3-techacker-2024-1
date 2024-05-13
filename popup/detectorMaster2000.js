@@ -3,6 +3,18 @@ document.addEventListener("DOMContentLoaded", contentLoadedHandler);
 
 function contentLoadedHandler() {
 	browser.tabs.query({ active: true, currentWindow: true }, getCookiesAndTPConnections);
+	const storageResponse = browser.runtime.sendMessage({ action: "localStorage" });
+	storageResponse.then(displayStorage);
+}
+
+function displayStorage(response) {
+	const localStorageSpan = document.getElementById("localStorage");
+	if (response.error) {
+		localStorageSpan.textContent = response.error;
+	} else {
+		const storageCount = 12;// response.data.localStorageCount;
+		localStorageSpan.textContent = String(storageCount);
+	}
 }
 
 function getCookiesAndTPConnections(tabs) {
