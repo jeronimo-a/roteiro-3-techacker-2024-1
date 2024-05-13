@@ -46,7 +46,9 @@ function handleMessage(request, sender, sendResponse) {
 			return true;
 
 		case "localStorage":
-			sendResponse({ message: "ok" });
+			chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+                tabs.length > 0 ? countStorageItemsInTab(tabs[0].id, sendResponse) : sendResponse({ error: "No active tab found" });
+            });
 			return true;
 
 		default:
@@ -88,6 +90,17 @@ function handleWebRequest(details) {
 // ############################################
 // ############### NOTIFICAÇÕES ###############
 // ############################################
+
+function countStorageItemsInTab(tabId, sendResponse) {
+    chrome.tabs.executeScript(tabId, {
+        code: `({
+            localStorageCount: Object.keys(localStorage).length,
+            sessionStorageCount: Object.keys(sessionStorage).length
+        })`
+    }, results => {
+        chrome.runtime.lastError ? sendResponse({ error: chrome.runtime.lastError.message }) : sendResponse({ data: results[0] });
+    });
+}
 
 // objeto de notificações
 const detectorNotification = {

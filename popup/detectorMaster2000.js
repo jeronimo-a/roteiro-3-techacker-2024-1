@@ -12,7 +12,7 @@ function displayStorage(response) {
 	if (response.error) {
 		localStorageSpan.textContent = response.error;
 	} else {
-		const storageCount = 12;// response.data.localStorageCount;
+		const storageCount = response.data.localStorageCount;
 		localStorageSpan.textContent = String(storageCount);
 	}
 }
