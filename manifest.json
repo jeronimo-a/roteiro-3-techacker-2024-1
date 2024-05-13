@@ -16,6 +16,7 @@
         "activeTab",
         "storage",
         "cookies",
+        "webNavigation",
         "<all_urls>"
     ],
 

@@ -18,6 +18,7 @@ browser.webRequest.onBeforeRequest.addListener(			// define que função chamar 
     handleWebRequest,		// handler de web requests
     {urls: ["<all_urls>"]}	// para que URLs
 );
+browser.webNavigation.onBeforeNavigate.addListener(handlePageChanged);
 
 // ########################################
 // ############### HANDLERS ###############
@@ -54,6 +55,12 @@ function handleMessage(request, sender, sendResponse) {
 		default:
 			sendResponse({ error: "Error, unknown action " + request.action });
 	}
+}
+
+// handler que roda sempre que o usuário navega para uma nova página
+function handlePageChanged(details) {
+	const tabsResponse = browser.tabs.query({ active: true, currentWindow: true });
+	tabsResponse.then(clearThirdPartyConnections);
 }
 
 // handler que roda antes de cada request da página
@@ -118,6 +125,10 @@ const detectorNotification = {
 // #############################################
 // ############### FUNÇÕES EXTRA ###############
 // #############################################
+
+function clearThirdPartyConnections(tabs) {
+	delete thirdPartyConnections[tabs[0].id];
+}
 
 function countStorageItemsInTab(tabs) {
     return new Promise(resolve => {
